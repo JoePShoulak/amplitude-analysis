@@ -23,10 +23,12 @@ function promptDrop() {
 }
 
 function playDemo() {
-  song === undefined && playSong("assets/summer-romance.mp3");
+  playSong("assets/summer-romance.mp3");
 }
 
 function playSong(file) {
+  if (song !== undefined) return;
+
   if (file.data) file = file.data;
 
   song = loadSound(file, () => song.play());
@@ -87,9 +89,11 @@ function draw() {
   const itToAngle = (it) => beginAngle + it * QUARTER_PI;
   for (let i = 0; i < 1; i += 0.01) {
     const lColor = lerpColor(color(currColor), color("white"), i);
+    const start = beginAngle + i * QUARTER_PI;
+    const end = beginAngle + (i + 1) * QUARTER_PI;
 
     stroke(lColor);
-    arc(width / 2, height / 2, vol, vol, itToAngle(i), itToAngle(i + 1));
+    arc(width / 2, height / 2, vol, vol, start, end);
   }
 
   // Draw the colored wave form
