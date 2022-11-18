@@ -4,8 +4,6 @@ let amp;
 let points;
 let dropzone;
 
-let demoButton;
-
 function songProgress() {
   if (song === undefined) return 0;
 
@@ -25,26 +23,22 @@ function promptDrop() {
 }
 
 function playDemo() {
-  if (song === undefined) {
-    playSong("assets/summer-romance.mp3");
-  }
+  song === undefined && playSong("assets/summer-romance.mp3");
 }
 
 function playSong(file) {
   if (file.data) file = file.data;
-  song = loadSound(file, () => {
-    song.play();
-  });
-  amp.setInput(song);
+
+  song = loadSound(file, () => song.play());
   song.onended(reset);
+
+  amp.setInput(song);
 
   noFill();
   loop();
 }
 
 function reset() {
-  song = undefined;
-  clear();
   noLoop();
   noStroke();
   textAlign(CENTER);
@@ -52,6 +46,7 @@ function reset() {
   textSize(20);
   background(20);
 
+  song = undefined;
   amp = new p5.Amplitude();
   points = new Array(ceil(width / 2)).fill({ value: 0, color: "red" });
 
@@ -59,13 +54,12 @@ function reset() {
 }
 
 function setup() {
-  body = select("body");
-  body.dragOver(promptDrop);
-  body.dragLeave(promptDragDrop);
-  body.drop(playSong, promptDragDrop);
-  body.mouseClicked(playDemo);
+  const cnv = createCanvas(innerWidth, innerHeight);
 
-  createCanvas(innerWidth, innerHeight);
+  cnv.dragOver(promptDrop);
+  cnv.dragLeave(promptDragDrop);
+  cnv.drop(playSong, promptDragDrop);
+  cnv.mouseClicked(playDemo);
 
   reset();
 }
@@ -90,13 +84,12 @@ function draw() {
 
   // Draw arc with lerped color
   const beginAngle = (3 * PI) / 2;
+  const itToAngle = (it) => beginAngle + it * QUARTER_PI;
   for (let i = 0; i < 1; i += 0.01) {
     const lColor = lerpColor(color(currColor), color("white"), i);
-    const start = beginAngle + i * QUARTER_PI;
-    const end = beginAngle + (i + 1) * QUARTER_PI;
 
     stroke(lColor);
-    arc(width / 2, height / 2, vol, vol, start, end);
+    arc(width / 2, height / 2, vol, vol, itToAngle(i), itToAngle(i + 1));
   }
 
   // Draw the colored wave form
