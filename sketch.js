@@ -16,8 +16,8 @@ const songProgress = () => {
 
 const promptDragDrop = () => {
   background(20);
-  text("Drag and drop a song to begin", width / 2, height / 2);
-  text("(or click anywhere for a demo song)", width / 2, height / 2 + 30);
+  text("Drag and drop a song to begin", width / 2, height / 2 - 15);
+  text("(or click anywhere for a demo song)", width / 2, height / 2 + 15);
 };
 
 const promptDrop = () => {
