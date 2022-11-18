@@ -29,7 +29,7 @@ function playDemo() {
 function playSong(file) {
   if (song !== undefined) return;
 
-  if (file.data) file = file.data;
+  file = file.data ? file.data : file;
 
   song = loadSound(file, () => song.play());
   song.onended(reset);
