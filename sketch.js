@@ -1,5 +1,6 @@
 /* == VARIABLES == */
 const COLOR_SPEED = 2.5;
+const BLANK = { value: 0, color: "red" };
 let song;
 let amp;
 let points;
@@ -47,20 +48,20 @@ const reset = () => {
 
   song = undefined;
   amp = new p5.Amplitude();
-  points = new Array(ceil(width / 2)).fill({ value: 0, color: "red" });
+  points = new Array(ceil(width / 2)).fill(BLANK);
 
   promptDragDrop();
 };
 
 function windowResized() {
   resizeCanvas(innerWidth, innerHeight);
-  promptDragDrop();
-  while (points.length < ceil(width / 2)) {
-    points.unshift({ value: 0, color: "red" });
-  }
 
-  while (points.length > ceil(width / 2)) {
-    points.shift();
+  if (isLooping()) {
+    while (points.length !== ceil(width / 2)) {
+      points.length < ceil(width / 2) ? points.unshift(BLANK) : points.shift();
+    }
+  } else {
+    promptDragDrop();
   }
 }
 
