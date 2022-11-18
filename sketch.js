@@ -57,8 +57,11 @@ function windowResized() {
   resizeCanvas(innerWidth, innerHeight);
 
   if (isLooping()) {
+    const lastColor = points[0].color;
     while (points.length !== ceil(width / 2)) {
-      points.length < ceil(width / 2) ? points.unshift(BLANK) : points.shift();
+      points.length < ceil(width / 2)
+        ? points.unshift({ color: lastColor, value: 0 })
+        : points.shift();
     }
   } else {
     promptDragDrop();
