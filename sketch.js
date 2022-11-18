@@ -1,6 +1,5 @@
 /* == VARIABLES == */
 const COLOR_SPEED = 2.5;
-const BLANK = { value: 0, color: "red" };
 let song;
 let amp;
 let points;
@@ -48,7 +47,7 @@ const reset = () => {
 
   song = undefined;
   amp = new p5.Amplitude();
-  points = new Array(ceil(width / 2)).fill(BLANK);
+  points = new Array(ceil(width / 2)).fill({ value: 0, color: "red" });
 
   promptDragDrop();
 };
@@ -60,7 +59,7 @@ function windowResized() {
     const lastColor = points[0].color;
     while (points.length !== ceil(width / 2)) {
       points.length < ceil(width / 2)
-        ? points.unshift({ color: lastColor, value: 0 })
+        ? points.unshift({ value: 0, color: lastColor })
         : points.shift();
     }
   } else {
@@ -91,10 +90,7 @@ function draw() {
   const currColor = hslToRgb(hue, 1, 0.5);
 
   points.shift();
-  points.push({
-    value: vol / 2,
-    color: currColor,
-  });
+  points.push({ value: vol / 2, color: currColor });
 
   background(20);
 
