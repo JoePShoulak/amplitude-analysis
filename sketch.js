@@ -9,9 +9,8 @@ let demoButton;
 function songProgress() {
   if (song === undefined) return 0;
 
-  let prog = song.currentTime() / song.duration();
-  prog = isNaN(prog) ? 0 : prog;
-  return prog;
+  const prog = song.currentTime() / song.duration();
+  return isNaN(prog) ? 0 : prog;
 }
 
 function promptDragDrop() {
@@ -33,7 +32,9 @@ function playDemo() {
 
 function playSong(file) {
   if (file.data) file = file.data;
-  song = loadSound(file, () => song.play());
+  song = loadSound(file, () => {
+    song.play();
+  });
   amp.setInput(song);
   song.onended(reset);
 
@@ -43,11 +44,13 @@ function playSong(file) {
 
 function reset() {
   song = undefined;
-
+  clear();
   noLoop();
+  noStroke();
   textAlign(CENTER);
   fill("white");
   textSize(20);
+  background(20);
 
   amp = new p5.Amplitude();
   points = new Array(ceil(width / 2)).fill({ value: 0, color: "red" });
