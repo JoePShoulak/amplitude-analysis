@@ -1,51 +1,48 @@
+/* == VARIABLES == */
 const COLOR_SPEED = 2.5;
 let song;
 let amp;
 let points;
 let dropzone;
 
-function songProgress() {
+/* == HELPERS == */
+const songProgress = () => {
   if (song === undefined) return 0;
 
   const prog = song.currentTime() / song.duration();
   return isNaN(prog) ? 0 : prog;
-}
+};
 
-function promptDragDrop() {
+const promptDragDrop = () => {
   background(20);
   text("Drag and drop a song to begin", width / 2, height / 2);
   text("(or click anywhere for a demo song)", width / 2, height / 2 + 30);
-}
+};
 
-function promptDrop() {
+const promptDrop = () => {
   background(20);
   text("Drop it like it's hot!", width / 2, height / 2);
-}
+};
 
-function playDemo() {
-  playSong("assets/summer-romance.mp3");
-}
+const playDemo = () => playSong("assets/summer-romance.mp3");
 
-function playSong(file) {
+const playSong = (file) => {
   if (song !== undefined) return;
 
   file = file.data ? file.data : file;
 
   song = loadSound(file, () => song.play());
   song.onended(reset);
-
   amp.setInput(song);
 
   noFill();
   loop();
-}
+};
 
-function reset() {
+const reset = () => {
   noLoop();
   noStroke();
-  textAlign(CENTER);
   fill("white");
-  textSize(20);
   background(20);
 
   song = undefined;
@@ -53,8 +50,21 @@ function reset() {
   points = new Array(ceil(width / 2)).fill({ value: 0, color: "red" });
 
   promptDragDrop();
+};
+
+function windowResized() {
+  resizeCanvas(innerWidth, innerHeight);
+  promptDragDrop();
+  while (points.length < ceil(width / 2)) {
+    points.unshift({ value: 0, color: "red" });
+  }
+
+  while (points.length > ceil(width / 2)) {
+    points.shift();
+  }
 }
 
+/* == MAIN FUNCTIONS == */
 function setup() {
   const cnv = createCanvas(innerWidth, innerHeight);
 
@@ -62,6 +72,9 @@ function setup() {
   cnv.dragLeave(promptDragDrop);
   cnv.drop(playSong, promptDragDrop);
   cnv.mouseClicked(playDemo);
+
+  textAlign(CENTER);
+  textSize(20);
 
   reset();
 }
@@ -86,7 +99,6 @@ function draw() {
 
   // Draw arc with lerped color
   const beginAngle = (3 * PI) / 2;
-  const itToAngle = (it) => beginAngle + it * QUARTER_PI;
   for (let i = 0; i < 1; i += 0.01) {
     const lColor = lerpColor(color(currColor), color("white"), i);
     const start = beginAngle + i * QUARTER_PI;
