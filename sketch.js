@@ -1,4 +1,4 @@
-const COLOR_SPEED = 2;
+const COLOR_SPEED = 2.5;
 let song;
 let amp;
 let points;
@@ -26,27 +26,24 @@ function promptDrop() {
 }
 
 function playDemo() {
-  playSong("assets/summer-romance.mp3");
-  removeElements();
+  if (song === undefined) {
+    playSong("assets/summer-romance.mp3");
+  }
 }
 
 function playSong(file) {
   if (file.data) file = file.data;
   song = loadSound(file, () => song.play());
   amp.setInput(song);
+  song.onended(reset);
 
   noFill();
   loop();
 }
 
-function setup() {
-  body = select("body");
-  body.dragOver(promptDrop);
-  body.dragLeave(promptDragDrop);
-  body.drop(playSong, promptDragDrop);
-  body.mouseClicked(playDemo);
+function reset() {
+  song = undefined;
 
-  createCanvas(innerWidth, innerHeight);
   noLoop();
   textAlign(CENTER);
   fill("white");
@@ -58,11 +55,23 @@ function setup() {
   promptDragDrop();
 }
 
+function setup() {
+  body = select("body");
+  body.dragOver(promptDrop);
+  body.dragLeave(promptDragDrop);
+  body.drop(playSong, promptDragDrop);
+  body.mouseClicked(playDemo);
+
+  createCanvas(innerWidth, innerHeight);
+
+  reset();
+}
+
 function draw() {
   if (song === undefined) return;
 
-  const vol = map(amp.getLevel(), 0, 1, 0, height);
-  const currColor = hslToRgb(songProgress() * COLOR_SPEED, 1, 0.5);
+  const vol = song.isPlaying() ? map(amp.getLevel(), 0, 1, 0, height) : 0;
+  const currColor = hslToRgb((songProgress() * COLOR_SPEED) % 1, 1, 0.5);
 
   points.shift();
   points.push({
