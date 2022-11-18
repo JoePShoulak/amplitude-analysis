@@ -84,7 +84,8 @@ function draw() {
   if (song === undefined) return;
 
   const vol = song.isPlaying() ? map(amp.getLevel(), 0, 1, 0, height) : 0;
-  const currColor = hslToRgb((songProgress() * COLOR_SPEED) % 1, 1, 0.5);
+  const hue = (songProgress() * COLOR_SPEED) % 1;
+  const currColor = hslToRgb(hue, 1, 0.5);
 
   points.shift();
   points.push({
